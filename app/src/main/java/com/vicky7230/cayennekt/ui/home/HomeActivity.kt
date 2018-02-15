@@ -50,7 +50,7 @@ class HomeActivity : BaseActivity(), HomeMvpView, HasSupportFragmentInjector {
                 }
                 R.id.likes -> {
                     viewPager.setCurrentItem(1, true)
-                    toolbarTitle.text = "Bookmarks"
+                    toolbarTitle.text = "Likes"
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.search -> {
@@ -78,7 +78,7 @@ class HomeActivity : BaseActivity(), HomeMvpView, HasSupportFragmentInjector {
                 bottomNavigationView.menu.getItem(position).isChecked = true
                 when (position) {
                     0 -> toolbarTitle.text = "Recipes"
-                    1 -> toolbarTitle.text = "Bookmarks"
+                    1 -> toolbarTitle.text = "Likes"
                     2 -> toolbarTitle.text = "Search"
                 }
             }

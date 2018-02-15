@@ -29,6 +29,11 @@ class RecipesModule {
     }
 
     @Provides
+    fun provideRecipesItemAnimator(): RecipesItemAnimator {
+        return RecipesItemAnimator()
+    }
+
+    @Provides
     fun provideRecipesAdapter(): RecipesAdapter {
         return RecipesAdapter(ArrayList())
     }

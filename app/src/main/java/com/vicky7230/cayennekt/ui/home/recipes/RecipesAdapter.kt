@@ -1,5 +1,7 @@
 package com.vicky7230.cayennekt.ui.home.recipes
 
+import android.content.Context
+import android.os.Handler
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -18,8 +20,15 @@ import kotlinx.android.synthetic.main.recipe_list_item.view.*
 class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        val ACTION_LIKE_BUTTON_CLICKED = "action_like_button_button"
+        val ACTION_LIKE_IMAGE_DOUBLE_CLICKED = "action_like_image_button"
+    }
+
     private val TYPE_LOADING = -1
     private val TYPE_RECIPE = 1
+
+    private var tapCount = 0
 
     interface Callback {
         fun onLikeRecipeClick(position: Int)
@@ -70,7 +79,7 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         return position.toLong()
     }
 
-    fun getItem(position: Int): Recipe? {
+    private fun getItem(position: Int): Recipe? {
         return if (position != RecyclerView.NO_POSITION)
             recipeList?.get(position)
         else
@@ -88,17 +97,10 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         }
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         when (viewType) {
             TYPE_RECIPE ->
-                return RecipeViewHolder(
-                    LayoutInflater.from(parent?.context).inflate(
-                        R.layout.recipe_list_item,
-                        parent,
-                        false
-                    )
-                )
+                return createRecipeViewHolder(parent)
             TYPE_LOADING ->
                 return LoadingMoreViewHolder(
                     LayoutInflater.from(parent?.context).inflate(
@@ -111,6 +113,89 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         return null
     }
 
+    private fun createRecipeViewHolder(parent: ViewGroup?): RecipeViewHolder {
+        val recipeViewHolder = RecipeViewHolder(
+            LayoutInflater.from(parent?.context).inflate(
+                R.layout.recipe_list_item,
+                parent,
+                false
+            )
+        )
+
+        recipeViewHolder.itemView.recipe_image_card.setOnClickListener({
+            val recipe = getItem(recipeViewHolder.adapterPosition)
+            if (recipe != null) {
+                tapCount++
+                if (tapCount == 1) {
+                    Handler().postDelayed({
+                        if (tapCount == 1) {
+                            onSingleClick(recipe, recipeViewHolder.itemView.context)
+                        }
+                        tapCount = 0
+                    }, 250)
+                } else if (tapCount == 2) {
+                    tapCount = 0
+                    onDoubleClick(recipeViewHolder.adapterPosition, recipe)
+                }
+            }
+        })
+
+        recipeViewHolder.itemView.like_button.setOnClickListener({
+            val recipe = getItem(recipeViewHolder.adapterPosition)
+            if (recipe != null) {
+                notifyItemChanged(recipeViewHolder.adapterPosition, ACTION_LIKE_BUTTON_CLICKED)
+                callback?.onLikeRecipeClick(recipeViewHolder.adapterPosition)
+                recipe.isLiked = true
+            }
+        })
+
+        recipeViewHolder.itemView.share_button.setOnClickListener({
+            val recipe = getItem(recipeViewHolder.adapterPosition)
+            if (recipe != null) {
+                callback?.onShareClick(recipe.sourceUrl)
+            }
+        })
+
+        recipeViewHolder.itemView.ingredients_button.setOnClickListener({
+            val recipe = getItem(recipeViewHolder.adapterPosition)
+            if (recipe != null) {
+                callback?.onIngredientsClick(recipe.recipeId)
+            }
+        })
+
+        return recipeViewHolder
+    }
+
+    private fun onSingleClick(recipe: Recipe, context: Context) {
+        /*if (recipe.getSourceUrl() != null) {
+            CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+                    .setShowTitle(true)
+                    .setToolbarColor(ContextCompat.getColor(context, R.color.color_primary))
+                    .setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.color_primary_dark))
+                    .addDefaultShareMenuItem()
+                    .build();
+            customTabsIntent.launchUrl(context, Uri.parse(recipe.getSourceUrl()));
+        }*/
+
+        callback?.onSingleClick(recipe)
+    }
+
+    private fun onDoubleClick(position: Int, recipe: Recipe) {
+        notifyItemChanged(position, ACTION_LIKE_IMAGE_DOUBLE_CLICKED)
+        callback?.onLikeRecipeClick(position)
+        recipe.isLiked = true
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder?) {
+        if (holder?.isRecyclable!!)
+            super.onViewRecycled(holder)
+        if (holder is RecipeViewHolder) {
+            holder.itemView.recipe_title.text = ""
+            holder.itemView.recipe_image.setImageDrawable(null)
+            holder.itemView.like_button.setImageResource(R.drawable.ic_favorite_border_white_24dp)
+        }
+    }
+
     class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun onBind(recipe: Recipe?) {
             GlideApp
@@ -120,17 +205,17 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
                 .centerCrop()
                 .into(itemView.recipe_image)
             itemView.recipe_title.text = recipe?.title
+            if (recipe?.isLiked!!)
+                itemView.like_button.setImageResource(R.drawable.ic_favorite_higlighted_24dp)
+            else
+                itemView.like_button.setImageResource(R.drawable.ic_favorite_border_white_24dp)
+
         }
     }
-
 
     class LoadingMoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun onBind() {
-            //val layoutParams: StaggeredGridLayoutManager.LayoutParams = StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            //layoutParams.isFullSpan = true
-            //itemView.layoutParams = layoutParams
         }
     }
-
 
 }

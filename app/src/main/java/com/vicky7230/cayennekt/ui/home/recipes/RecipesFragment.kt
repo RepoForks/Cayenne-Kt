@@ -12,9 +12,11 @@ import com.vicky7230.cayennekt.data.network.model.Recipe
 import com.vicky7230.cayennekt.ui.base.BaseFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_recipes.*
+import kotlinx.android.synthetic.main.recipe_list_item.*
 import javax.inject.Inject
 
-class RecipesFragment : BaseFragment(), RecipesMvpView {
+class RecipesFragment : BaseFragment(), RecipesMvpView, RecipesAdapter.Callback {
+
     @Inject
     lateinit var presenter: RecipesMvpPresenter<RecipesMvpView>
 
@@ -22,6 +24,8 @@ class RecipesFragment : BaseFragment(), RecipesMvpView {
     lateinit var linearLayoutManager: LinearLayoutManager
     @Inject
     lateinit var itemOffsetDecoration: ItemOffsetDecoration
+    @Inject
+    lateinit var recipesItemAnimator: RecipesItemAnimator
     @Inject
     lateinit var recipesAdapter: RecipesAdapter
 
@@ -44,12 +48,14 @@ class RecipesFragment : BaseFragment(), RecipesMvpView {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recipes, container, false)
         presenter.onAttach(this)
+        recipesAdapter.setCallback(this)
         return view
     }
 
     override fun setUp(view: View) {
         recipeList.layoutManager = linearLayoutManager
         recipeList.addItemDecoration(itemOffsetDecoration)
+        recipeList.itemAnimator = recipesItemAnimator
         recipeList.adapter = recipesAdapter
 
         recipeList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -76,6 +82,21 @@ class RecipesFragment : BaseFragment(), RecipesMvpView {
             recipesAdapter.removeItem()
         recipesAdapter.addItems(recipes)
         isLoading = false
+    }
+
+    override fun onLikeRecipeClick(position: Int) {
+    }
+
+    override fun onRetryClick() {
+    }
+
+    override fun onShareClick(sourceUrl: String) {
+    }
+
+    override fun onIngredientsClick(recipeId: String) {
+    }
+
+    override fun onSingleClick(recipe: Recipe) {
     }
 
     override fun onDestroyView() {
