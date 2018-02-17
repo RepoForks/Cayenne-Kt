@@ -1,5 +1,6 @@
 package com.vicky7230.cayennekt.ui.home.recipes
 
+import com.vicky7230.cayennekt.data.network.model.recipes.Recipe
 import com.vicky7230.cayennekt.ui.base.MvpPresenter
 
 /**
@@ -7,4 +8,6 @@ import com.vicky7230.cayennekt.ui.base.MvpPresenter
  */
 interface RecipesMvpPresenter<V : RecipesMvpView> : MvpPresenter<V> {
     fun getRecipes()
+    fun getRecipe(recipeId: String)
+    fun saveRecipe(recipe: Recipe?)
 }

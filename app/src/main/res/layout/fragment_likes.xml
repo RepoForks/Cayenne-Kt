@@ -5,12 +5,9 @@
     android:background="@android:color/white"
     tools:context="com.vicky7230.cayennekt.ui.home.likes.LikesFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="LIKES"
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/likesList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

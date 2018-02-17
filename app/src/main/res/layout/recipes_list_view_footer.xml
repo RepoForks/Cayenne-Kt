@@ -30,9 +30,8 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!--<android.support.v7.widget.AppCompatButton
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/retry_button"
-        fontPath="fonts/NeologyDecoW01-Medium.ttf"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_gravity="center"
@@ -48,6 +47,5 @@
         android:text="RETRY"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:visibility="gone"
-        tools:ignore="HardcodedText" />-->
+        android:visibility="gone" />
 </FrameLayout>

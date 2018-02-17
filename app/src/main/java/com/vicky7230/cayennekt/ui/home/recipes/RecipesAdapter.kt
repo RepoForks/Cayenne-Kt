@@ -1,6 +1,5 @@
 package com.vicky7230.cayennekt.ui.home.recipes
 
-import android.content.Context
 import android.os.Handler
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -9,9 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.vicky7230.cayennekt.R
-import com.vicky7230.cayennekt.data.network.model.Recipe
+import com.vicky7230.cayennekt.data.network.model.recipes.Recipe
+import com.vicky7230.cayennekt.ui.home.RecipeDiffUtilCallback
 import com.vicky7230.cayennekt.utils.GlideApp
+import com.vicky7230.cayennekt.utils.NetworkUtils
 import kotlinx.android.synthetic.main.recipe_list_item.view.*
+import kotlinx.android.synthetic.main.recipes_list_view_footer.view.*
 
 
 /**
@@ -39,7 +41,7 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
 
         fun onIngredientsClick(recipeId: String)
 
-        fun onSingleClick(recipe: Recipe)
+        fun onSingleClick(sourceUrl: String)
     }
 
     private var callback: Callback? = null
@@ -55,7 +57,12 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         newRecipeList.addAll(recipeList!!)
 
         val diffResult =
-            DiffUtil.calculateDiff(RecipeDiffUtilCallback(this.recipeList, newRecipeList))
+            DiffUtil.calculateDiff(
+                RecipeDiffUtilCallback(
+                    this.recipeList,
+                    newRecipeList
+                )
+            )
         this.recipeList.addAll(recipeList)
         diffResult.dispatchUpdatesTo(this)
     }
@@ -79,7 +86,7 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         return position.toLong()
     }
 
-    private fun getItem(position: Int): Recipe? {
+    public fun getItem(position: Int): Recipe? {
         return if (position != RecyclerView.NO_POSITION)
             recipeList?.get(position)
         else
@@ -102,13 +109,7 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
             TYPE_RECIPE ->
                 return createRecipeViewHolder(parent)
             TYPE_LOADING ->
-                return LoadingMoreViewHolder(
-                    LayoutInflater.from(parent?.context).inflate(
-                        R.layout.recipes_list_view_footer,
-                        parent,
-                        false
-                    )
-                )
+                return createLoadingMoreViewHolder(parent)
         }
         return null
     }
@@ -129,7 +130,7 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
                 if (tapCount == 1) {
                     Handler().postDelayed({
                         if (tapCount == 1) {
-                            onSingleClick(recipe, recipeViewHolder.itemView.context)
+                            callback?.onSingleClick(recipe.sourceUrl)
                         }
                         tapCount = 0
                     }, 250)
@@ -145,7 +146,7 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
             if (recipe != null) {
                 notifyItemChanged(recipeViewHolder.adapterPosition, ACTION_LIKE_BUTTON_CLICKED)
                 callback?.onLikeRecipeClick(recipeViewHolder.adapterPosition)
-                recipe.isLiked = true
+                recipe.liked = true
             }
         })
 
@@ -166,33 +167,46 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         return recipeViewHolder
     }
 
-    private fun onSingleClick(recipe: Recipe, context: Context) {
-        /*if (recipe.getSourceUrl() != null) {
-            CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
-                    .setShowTitle(true)
-                    .setToolbarColor(ContextCompat.getColor(context, R.color.color_primary))
-                    .setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.color_primary_dark))
-                    .addDefaultShareMenuItem()
-                    .build();
-            customTabsIntent.launchUrl(context, Uri.parse(recipe.getSourceUrl()));
-        }*/
+    private fun createLoadingMoreViewHolder(parent: ViewGroup?): LoadingMoreViewHolder {
+        val loadingMoreViewHolder = LoadingMoreViewHolder(
+            LayoutInflater.from(parent?.context).inflate(
+                R.layout.recipes_list_view_footer,
+                parent,
+                false
+            )
+        )
 
-        callback?.onSingleClick(recipe)
+        loadingMoreViewHolder.itemView.retry_button.setOnClickListener({
+            loadingMoreViewHolder.itemView.loading.visibility = View.VISIBLE
+            loadingMoreViewHolder.itemView.retry_button.visibility = View.GONE
+            callback?.onRetryClick()
+        })
+
+        return loadingMoreViewHolder
     }
 
     private fun onDoubleClick(position: Int, recipe: Recipe) {
         notifyItemChanged(position, ACTION_LIKE_IMAGE_DOUBLE_CLICKED)
         callback?.onLikeRecipeClick(position)
-        recipe.isLiked = true
+        recipe.liked = true
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder?) {
-        if (holder?.isRecyclable!!)
-            super.onViewRecycled(holder)
+        super.onViewRecycled(holder)
         if (holder is RecipeViewHolder) {
             holder.itemView.recipe_title.text = ""
             holder.itemView.recipe_image.setImageDrawable(null)
             holder.itemView.like_button.setImageResource(R.drawable.ic_favorite_border_white_24dp)
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder?) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is LoadingMoreViewHolder) {
+            if (!NetworkUtils.isNetworkConnected(holder.itemView.context)) {
+                holder.itemView.loading.visibility = View.GONE
+                holder.itemView.retry_button.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -205,11 +219,10 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
                 .centerCrop()
                 .into(itemView.recipe_image)
             itemView.recipe_title.text = recipe?.title
-            if (recipe?.isLiked!!)
+            if (recipe?.liked!!)
                 itemView.like_button.setImageResource(R.drawable.ic_favorite_higlighted_24dp)
             else
                 itemView.like_button.setImageResource(R.drawable.ic_favorite_border_white_24dp)
-
         }
     }
 
@@ -217,5 +230,4 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         fun onBind() {
         }
     }
-
 }

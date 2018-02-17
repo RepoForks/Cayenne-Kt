@@ -1,11 +1,18 @@
 package com.vicky7230.cayennekt.di.module
 
 import android.app.Application
+import android.arch.persistence.room.Room
 import android.content.Context
+import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.ContextCompat
 import com.vicky7230.cayennekt.CayenneApplication
+import com.vicky7230.cayennekt.R
 import com.vicky7230.cayennekt.data.AppDataManager
 import com.vicky7230.cayennekt.data.Config
 import com.vicky7230.cayennekt.data.DataManager
+import com.vicky7230.cayennekt.data.db.AppDbHelper
+import com.vicky7230.cayennekt.data.db.DbHelper
+import com.vicky7230.cayennekt.data.db.room.AppDatabase
 import com.vicky7230.cayennekt.data.network.ApiHelper
 import com.vicky7230.cayennekt.data.network.AppApiHelper
 import com.vicky7230.cayennekt.di.ApplicationContext
@@ -37,11 +44,21 @@ class ApplicationModule {
         return CompositeDisposable()
     }
 
-    /*@Provides
+    @Provides
+    fun provideCustomTabsIntent(@ApplicationContext context: Context): CustomTabsIntent {
+        return CustomTabsIntent.Builder()
+            .setShowTitle(true)
+            .setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            .setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+            .addDefaultShareMenuItem()
+            .build()
+    }
+
+    @Provides
     @Singleton
     fun provideRoomDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, Config.DB_NAME).build()
-    }*/
+    }
 
     @Provides
     @BaseUrl
@@ -55,11 +72,11 @@ class ApplicationModule {
         return appDataManager
     }
 
-    /*@Provides
+    @Provides
     @Singleton
     internal fun provideDbHelper(appDbHelper: AppDbHelper): DbHelper {
         return appDbHelper
-    }*/
+    }
 
     @Provides
     @Singleton

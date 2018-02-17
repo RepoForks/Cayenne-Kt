@@ -1,7 +1,7 @@
-package com.vicky7230.cayennekt.ui.home.recipes
+package com.vicky7230.cayennekt.ui.home
 
 import android.support.v7.util.DiffUtil
-import com.vicky7230.cayennekt.data.network.model.Recipe
+import com.vicky7230.cayennekt.data.network.model.recipes.Recipe
 
 
 /**

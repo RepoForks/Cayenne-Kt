@@ -1,4 +1,4 @@
-package com.vicky7230.cayennekt.ui.home.recipes
+package com.vicky7230.cayennekt.ui.home
 
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView

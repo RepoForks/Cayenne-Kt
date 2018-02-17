@@ -1,4 +1,4 @@
-package com.vicky7230.cayennekt.ui.home.recipes
+package com.vicky7230.cayennekt.ui.home.likes
 
 import com.vicky7230.cayennekt.data.Config
 import com.vicky7230.cayennekt.data.DataManager
@@ -11,49 +11,30 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-
 /**
- * Created by vicky on 13/2/18.
+ * Created by vicky on 17/2/18.
  */
-class RecipesPresenter<V : RecipesMvpView> @Inject constructor(
+class LikesPresenter<V : LikesMvpView> @Inject constructor(
     private val dataManager: DataManager,
     private val compositeDisposable: CompositeDisposable
-) : BasePresenter<V>(dataManager, compositeDisposable), RecipesMvpPresenter<V> {
-
-    private var page = 1
+) : BasePresenter<V>(dataManager, compositeDisposable), LikesMvpPresenter<V> {
 
     override fun getRecipes() {
 
         compositeDisposable.addAll(
-            dataManager.getRecipes(
-                Config.API_KEY,
-                page.toString(),
-                "10"
-            )
-                .map { recipes ->
-                    if (recipes.recipes != null) {
-                        for (recipe in recipes.recipes!!) {
-                            recipe.liked = dataManager.selectRecipe(recipe.recipeId).size > 0
-                        }
-                    }
-                    recipes
-                }
-                .subscribeOn(Schedulers.io())
+            dataManager.selectRecipes()
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ recipes ->
                     if (!isViewAttached())
                         return@subscribe
-                    mvpView?.hideLoading()
-                    if (recipes.recipes != null) {
-                        mvpView?.updateRecipeList(recipes.recipes!!)
-                        ++page
+                    if (recipes != null) {
+                        mvpView?.updateLikeList(recipes)
                     }
                 }, { throwable ->
                     if (!isViewAttached())
                         return@subscribe
-                    mvpView?.hideLoading()
                     mvpView?.showMessage(throwable.message!!)
-                    mvpView?.showErrorInRecyclerView()
                     Timber.e(throwable.message)
                 })
         )
@@ -86,18 +67,20 @@ class RecipesPresenter<V : RecipesMvpView> @Inject constructor(
         )
     }
 
-    override fun saveRecipe(recipe: Recipe?) {
+    override fun removeRecipe(recipe: Recipe) {
+
         compositeDisposable.addAll(
-            Observable.defer { Observable.just(dataManager.insertRecipe(recipe)) }
+            Observable.defer { Observable.just(dataManager.deleteRecipe(recipe)) }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ _ ->
                     if (!isViewAttached())
                         return@subscribe
-                    mvpView?.showMessage("Recipe Liked.")
+                    mvpView?.showMessage("Recipe Removed.")
                 }, { throwable ->
                     if (!isViewAttached())
                         return@subscribe
+                    mvpView?.hideLoading()
                     mvpView?.showMessage(throwable.message!!)
                     Timber.e(throwable.message)
                 })

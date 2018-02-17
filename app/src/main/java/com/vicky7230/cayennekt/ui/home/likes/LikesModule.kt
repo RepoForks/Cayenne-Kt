@@ -1,4 +1,4 @@
-package com.vicky7230.cayennekt.ui.home.recipes
+package com.vicky7230.cayennekt.ui.home.likes
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
@@ -12,10 +12,10 @@ import dagger.Provides
  * Created by vicky on 13/2/18.
  */
 @Module
-class RecipesModule {
+class LikesModule {
 
     @Provides
-    fun provideRecipesMvpPresenter(presenter: RecipesPresenter<RecipesMvpView>): RecipesMvpPresenter<RecipesMvpView> {
+    fun provideLikesMvpPresenter(presenter: LikesPresenter<LikesMvpView>): LikesMvpPresenter<LikesMvpView> {
         return presenter
     }
 
@@ -30,12 +30,7 @@ class RecipesModule {
     }
 
     @Provides
-    fun provideRecipesItemAnimator(): RecipesItemAnimator {
-        return RecipesItemAnimator()
-    }
-
-    @Provides
-    fun provideRecipesAdapter(): RecipesAdapter {
-        return RecipesAdapter(ArrayList())
+    fun provideLikesAdapter(): LikesAdapter {
+        return LikesAdapter(ArrayList())
     }
 }

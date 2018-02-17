@@ -23,7 +23,6 @@ abstract class BaseFragment : Fragment(), MvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUp(view)
-
     }
 
     override fun onAttach(context: Context) {
@@ -59,7 +58,6 @@ abstract class BaseFragment : Fragment(), MvpView {
     fun getBaseActivity(): BaseActivity? {
         return baseActivity
     }
-
 
     @TargetApi(Build.VERSION_CODES.M)
     fun requestPermissionsSafely(permissions: Array<String>, requestCode: Int) {

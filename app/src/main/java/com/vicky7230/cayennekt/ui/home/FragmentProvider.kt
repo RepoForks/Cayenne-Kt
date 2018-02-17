@@ -1,8 +1,10 @@
 package com.vicky7230.cayennekt.ui.home
 
-import dagger.Module
+import com.vicky7230.cayennekt.ui.home.likes.LikesFragment
+import com.vicky7230.cayennekt.ui.home.likes.LikesModule
 import com.vicky7230.cayennekt.ui.home.recipes.RecipesFragment
 import com.vicky7230.cayennekt.ui.home.recipes.RecipesModule
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 
@@ -13,4 +15,7 @@ import dagger.android.ContributesAndroidInjector
 abstract class FragmentProvider {
     @ContributesAndroidInjector(modules = [(RecipesModule::class)])
     internal abstract fun provideRecipesFragmentFactory(): RecipesFragment
+
+    @ContributesAndroidInjector(modules = [(LikesModule::class)])
+    internal abstract fun provideLikesFragmentFactory(): LikesFragment
 }
