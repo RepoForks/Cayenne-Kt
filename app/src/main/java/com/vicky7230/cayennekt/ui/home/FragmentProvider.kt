@@ -4,6 +4,8 @@ import com.vicky7230.cayennekt.ui.home.likes.LikesFragment
 import com.vicky7230.cayennekt.ui.home.likes.LikesModule
 import com.vicky7230.cayennekt.ui.home.recipes.RecipesFragment
 import com.vicky7230.cayennekt.ui.home.recipes.RecipesModule
+import com.vicky7230.cayennekt.ui.home.search.SearchFragment
+import com.vicky7230.cayennekt.ui.home.search.SearchModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -18,4 +20,7 @@ abstract class FragmentProvider {
 
     @ContributesAndroidInjector(modules = [(LikesModule::class)])
     internal abstract fun provideLikesFragmentFactory(): LikesFragment
+
+    @ContributesAndroidInjector(modules = [(SearchModule::class)])
+    internal abstract fun provideSearchFragmentFactory(): SearchFragment
 }

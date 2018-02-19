@@ -86,7 +86,7 @@ class RecipesAdapter(private val recipeList: MutableList<Recipe>?) :
         return position.toLong()
     }
 
-    public fun getItem(position: Int): Recipe? {
+    fun getItem(position: Int): Recipe? {
         return if (position != RecyclerView.NO_POSITION)
             recipeList?.get(position)
         else

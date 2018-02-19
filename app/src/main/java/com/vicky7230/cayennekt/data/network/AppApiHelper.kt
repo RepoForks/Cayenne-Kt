@@ -1,5 +1,7 @@
 package com.vicky7230.cayennekt.data.network
 
+import com.vicky7230.cayennekt.data.network.model.recipes.Recipes
+import io.reactivex.Observable
 import javax.inject.Inject
 
 /**
@@ -12,4 +14,7 @@ class AppApiHelper @Inject constructor(private val apiService: ApiService) : Api
 
     override fun getRecipes(key: String, page: String, count: String) =
         apiService.getRecipes(key, page, count)
+
+    override fun searchRecipes(key: String, query: String, page: String) =
+        apiService.searchRecipes(key, query, page)
 }

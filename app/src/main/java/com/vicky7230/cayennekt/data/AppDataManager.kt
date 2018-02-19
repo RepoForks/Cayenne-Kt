@@ -3,6 +3,8 @@ package com.vicky7230.cayennekt.data
 import com.vicky7230.cayennekt.data.db.AppDbHelper
 import com.vicky7230.cayennekt.data.network.AppApiHelper
 import com.vicky7230.cayennekt.data.network.model.recipes.Recipe
+import com.vicky7230.cayennekt.data.network.model.recipes.Recipes
+import io.reactivex.Observable
 import javax.inject.Inject
 
 /**
@@ -16,6 +18,9 @@ constructor(private val appApiHelper: AppApiHelper, private val appDbHelper: App
 
     override fun getRecipe(key: String, rId: String) =
         appApiHelper.getRecipe(key, rId)
+
+    override fun searchRecipes(key: String, query: String, page: String) =
+        appApiHelper.searchRecipes(key, query, page)
 
     override fun insertRecipe(recipe: Recipe?) =
         appDbHelper.insertRecipe(recipe)

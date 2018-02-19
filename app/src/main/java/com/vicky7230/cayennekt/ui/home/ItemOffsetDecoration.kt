@@ -2,7 +2,6 @@ package com.vicky7230.cayennekt.ui.home
 
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 
 
@@ -17,8 +16,9 @@ class ItemOffsetDecoration(private val offset: Int) : RecyclerView.ItemDecoratio
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.top = offset / 2
+        val position = parent.getChildAdapterPosition(view)
+        if (position != 0)
+            outRect.top = offset / 2
         outRect.bottom = offset / 2
     }
-
 }

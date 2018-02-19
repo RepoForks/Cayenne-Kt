@@ -26,4 +26,12 @@ interface ApiService {
         @Field("key") key: String,
         @Field("rId") rId: String
     ): Observable<SingleRecipe>
+
+    @FormUrlEncoded
+    @POST("search")
+    fun searchRecipes(
+        @Field("key") key: String,
+        @Field("q") query: String,
+        @Field("page") page: String
+    ): Observable<Recipes>
 }
