@@ -2,7 +2,7 @@
 
 # Cayenne
 ![License](https://img.shields.io/badge/LICENSE-Apache%20License%202.0-blue.svg)
-
+![KOTLIN LOGO](https://github.com/vicky7230/Cayenne-Kt/blob/master/graphics/kotLogo.png "Cayeene is wriitn in kotlin")
  
 ### A recipe finding app for people who love to cook.
 
