@@ -1,16 +1,17 @@
+![alt text](https://github.com/vicky7230/Cayenne-Kt/blob/master/app/src/main/res/mipmap-xhdpi/ic_launcher.png "Logo")
+
 # Cayenne
-[![License](https://img.shields.io/badge/LICENSE-Apache%20License%202.0-blue.svg)](https://github.com/vicky7230/Paprika/blob/master/LICENSE)
-<!-- ![alt text](https://github.com/vicky7230/Cayenne-Kt/blob/master/app/src/main/res/mipmap-xhdpi/ic_launcher.png "Logo")
-<br>
- -->
+![License](https://img.shields.io/badge/LICENSE-Apache%20License%202.0-blue.svg)
+
+ 
 ### A recipe finding app for people who love to cook.
 
 #### This repository implements MVP architecture using Kotlin, Dagger2, RxJava2, Room and Retrofit2. 
 
 <p align="center">
-  <img src="https://github.com/vicky7230/Cayenne-Kt/blob/master/graphics/1.png" width="350">
-  <img src="https://github.com/vicky7230/Cayenne-Kt/blob/master/graphics/2.png" width="350">
-  <img src="https://github.com/vicky7230/Cayenne-Kt/blob/master/graphics/3.png" width="350">
+  <img src="https://github.com/vicky7230/Cayenne-Kt/blob/master/graphics/1.png" width="280">
+  <img src="https://github.com/vicky7230/Cayenne-Kt/blob/master/graphics/2.png" width="280">
+  <img src="https://github.com/vicky7230/Cayenne-Kt/blob/master/graphics/3.png" width="280">
 </p>
 
 # Architecture Blueprint
