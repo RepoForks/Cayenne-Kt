@@ -3,24 +3,26 @@
 buildscript {
 
     ext.versions = [
-            'kotlin_version'  : '1.2.21',
-            'compileSdk'      : 27,//
-            'targetSdk'       : 27,//
-            'buildTools'      : '27.0.0',//
-            'glide'           : '4.6.1',//
-            'retrofit'        : '2.3.0',//
-            'okhttp'          : '3.9.1',//
-            'rxandroid'       : '2.0.2',//
-            'rxjava'          : '2.1.9',//
-            'gson'            : '2.8.2',//
-            'dagger'          : '2.14.1',//
-            'supportLibrary'  : '27.0.2',//
-            'constraintLayout': '1.0.2',//
-            'rxbinding'       : '2.1.0',//
-            'debug_db'        : '1.0.3', //
-            'eventbus'        : '3.1.1',
-            'timber'          : '4.6.1',
-            'archComponents'  : '1.0.0'
+            'kotlin_version'      : '1.2.21',
+            'compileSdk'          : 27,//
+            'targetSdk'           : 27,//
+            'buildTools'          : '27.0.0',//
+            'glide'               : '4.6.1',//
+            'retrofit'            : '2.3.0',//
+            'okhttp'              : '3.9.1',//
+            'rxandroid'           : '2.0.2',//
+            'rxjava'              : '2.1.9',//
+            'gson'                : '2.8.2',//
+            'dagger'              : '2.14.1',//
+            'supportLibrary'      : '27.0.2',//
+            'constraintLayout'    : '1.0.2',//
+            'rxbinding'           : '2.1.0',//
+            'debug_db'            : '1.0.3', //
+            'eventbus'            : '3.1.1',
+            'timber'              : '4.6.1',
+            'archComponents'      : '1.0.0',
+            'attributionPresenter': '1.0',
+            'htmlTextview'        : '3.5'
     ]
     repositories {
         google()
@@ -39,6 +41,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 

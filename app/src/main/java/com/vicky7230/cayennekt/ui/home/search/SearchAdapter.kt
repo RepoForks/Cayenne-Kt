@@ -28,10 +28,6 @@ class SearchAdapter(private val recipeList: MutableList<Recipe>?) :
 
         fun onRetryClick()
 
-        fun onShareClick(sourceUrl: String)
-
-        fun onIngredientsClick(recipeId: String)
-
         fun onSingleClick(sourceUrl: String)
     }
 
@@ -107,13 +103,31 @@ class SearchAdapter(private val recipeList: MutableList<Recipe>?) :
     }
 
     private fun createSearchItemViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
-        return SearchItemViewHolder(
+        val searchItemViewHolder = SearchItemViewHolder(
             LayoutInflater.from(parent?.context).inflate(
                 R.layout.search_list_item,
                 parent,
                 false
             )
         )
+
+        searchItemViewHolder.itemView.search_item.setOnClickListener({
+            val recipe = getItem(searchItemViewHolder.adapterPosition)
+            if (recipe != null) {
+                callback?.onSingleClick(recipe.sourceUrl)
+            }
+        })
+
+        searchItemViewHolder.itemView.search_like_button.setOnClickListener({
+            val recipe = getItem(searchItemViewHolder.adapterPosition)
+            if (recipe != null) {
+                callback?.onLikeRecipeClick(searchItemViewHolder.adapterPosition)
+                recipe.liked = true
+                notifyItemChanged(searchItemViewHolder.adapterPosition)
+            }
+        })
+
+        return searchItemViewHolder
     }
 
     private fun createLoadingItemViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder? {
@@ -164,6 +178,10 @@ class SearchAdapter(private val recipeList: MutableList<Recipe>?) :
                 .centerCrop()
                 .into(itemView.recipe_image)
             itemView.recipe_title.text = recipe?.title
+            if (recipe?.liked!!)
+                itemView.search_like_button.setImageResource(R.drawable.ic_favorite_higlighted_24dp)
+            else
+                itemView.search_like_button.setImageResource(R.drawable.ic_favorite_border_black_24dp)
         }
     }
 

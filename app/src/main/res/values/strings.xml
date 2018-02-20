@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Cayenne Kt</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:override="true">Cayenne Kt</string>
     <string name="about">About</string>
     <string name="loading">Loading</string>
     <string name="ingredients">Ingredients</string>

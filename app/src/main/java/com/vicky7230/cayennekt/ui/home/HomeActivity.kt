@@ -1,12 +1,15 @@
 package com.vicky7230.cayennekt.ui.home
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.Menu
 import android.view.MenuItem
 import com.vicky7230.cayennekt.R
+import com.vicky7230.cayennekt.ui.about.AboutActivity
 import com.vicky7230.cayennekt.ui.base.BaseActivity
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -24,6 +27,12 @@ class HomeActivity : BaseActivity(), HomeMvpView, HasSupportFragmentInjector {
     lateinit var presenter: HomeMvpPresenter<HomeMvpView>
     @Inject
     lateinit var viewPagerAdapter: ViewPagerAdapter
+
+    companion object {
+        fun getStartIntent(context: Context): Intent {
+            return Intent(context, HomeActivity::class.java)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -92,9 +101,10 @@ class HomeActivity : BaseActivity(), HomeMvpView, HasSupportFragmentInjector {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.about ->
-                //TODO
+            R.id.about -> {
+                startActivity(AboutActivity.getStartIntent(this))
                 true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -1,10 +1,11 @@
 package com.vicky7230.cayennekt.ui.home.search
 
-import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent
 import com.vicky7230.cayennekt.data.Config
 import com.vicky7230.cayennekt.data.DataManager
+import com.vicky7230.cayennekt.data.network.model.recipes.Recipe
 import com.vicky7230.cayennekt.data.network.model.recipes.Recipes
 import com.vicky7230.cayennekt.ui.base.BasePresenter
+import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -23,10 +24,9 @@ class SearchPresenter<V : SearchMvpView> @Inject constructor(
     private val dataManager: DataManager,
     private val compositeDisposable: CompositeDisposable
 ) : BasePresenter<V>(dataManager, compositeDisposable), SearchMvpPresenter<V> {
-
     var page = 1
-    var query = ""
 
+    var query = ""
     override fun search(subject: PublishSubject<String>) {
         compositeDisposable.add(
             subject
@@ -41,10 +41,18 @@ class SearchPresenter<V : SearchMvpView> @Inject constructor(
                         Config.API_KEY,
                         it,
                         "1"
-                    )
+                    ).map { recipes ->
+                        if (recipes.recipes != null) {
+                            for (recipe in recipes.recipes!!) {
+                                recipe.liked = dataManager.selectRecipe(recipe.recipeId).size > 0
+                            }
+                        }
+                        recipes
+                    }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                 })
+                .retry()
                 .subscribe({ recipes ->
                     if (!isViewAttached())
                         return@subscribe
@@ -82,6 +90,24 @@ class SearchPresenter<V : SearchMvpView> @Inject constructor(
                         return@subscribe
                     mvpView?.showMessage(throwable.message!!)
                     mvpView?.showErrorInRecyclerView()
+                    Timber.e(throwable.message)
+                })
+        )
+    }
+
+    override fun saveRecipe(recipe: Recipe?) {
+        compositeDisposable.addAll(
+            Observable.defer { Observable.just(dataManager.insertRecipe(recipe)) }
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ _ ->
+                    if (!isViewAttached())
+                        return@subscribe
+                    mvpView?.showMessage("Recipe Liked.")
+                }, { throwable ->
+                    if (!isViewAttached())
+                        return@subscribe
+                    mvpView?.showMessage(throwable.message!!)
                     Timber.e(throwable.message)
                 })
         )

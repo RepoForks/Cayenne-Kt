@@ -95,6 +95,8 @@ class SearchFragment : BaseFragment(), SearchMvpView, SearchAdapter.Callback {
         search_edit_text.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 subject.onNext(s.toString())
+                if (s.toString().isEmpty())
+                    searchAdapter.refreshItems(ArrayList())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -121,16 +123,11 @@ class SearchFragment : BaseFragment(), SearchMvpView, SearchAdapter.Callback {
     }
 
     override fun onLikeRecipeClick(position: Int) {
+        presenter.saveRecipe(searchAdapter.getItem(position))
     }
 
     override fun onRetryClick() {
         presenter.getNextPage()
-    }
-
-    override fun onShareClick(sourceUrl: String) {
-    }
-
-    override fun onIngredientsClick(recipeId: String) {
     }
 
     override fun onSingleClick(sourceUrl: String) {
